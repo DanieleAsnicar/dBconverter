@@ -6,10 +6,29 @@ MainComponent::MainComponent()
     addAndMakeVisible(convertButton);    
     addAndMakeVisible(resetButton);
 
-    addAndMakeVisible(titleLabel);
+    addAndMakeVisible(unitMenu);
+    unitMenu.addItem("V to dBV", 1);
+    unitMenu.addItem("V to dBu", 2);
+    unitMenu.addItem("V to dBuV", 3);
+    unitMenu.addItem("mV to dBmV", 4);
+    unitMenu.addItem("uV to dBuV", 5);
+
+    unitMenu.onChange = [this] 
+    {
+        unitMenuChanged(); 
+    };
+    unitMenu.setSelectedId(1);
+
+    /*addAndMakeVisible(titleLabel);
     titleLabel.setFont(juce::Font(16.0f, juce::Font::bold));
     titleLabel.setText("Level Converter: V to dBV", juce::dontSendNotification);
-    titleLabel.setJustificationType(juce::Justification::centred);
+    titleLabel.setJustificationType(juce::Justification::centred);*/
+    
+    addAndMakeVisible(unitMenuLabel);
+    //unitMenuLabel.setFont(juce::Font(16.0f, juce::Font::bold));
+    unitMenuLabel.setText("Decibel unit:", juce::dontSendNotification);
+    unitMenuLabel.attachToComponent(&unitMenu, true);
+    unitMenuLabel.setJustificationType(juce::Justification::right);
     
     addAndMakeVisible(levelLabel);
     levelLabel.setText("Level:", juce::dontSendNotification);
@@ -40,12 +59,10 @@ MainComponent::MainComponent()
     inputLevelLabel.onTextChange = [this] ()
     {         
         float levelValue = inputLevelLabel.getText().getFloatValue();
-        float dbValue = 20 * log10(levelValue / 1.0f); // dBV ref value 1V
-        juce::String dbValueStr{ dbValue };
-       
-        convertButton.onClick = [this, dbValueStr]()
+        convertButton.onClick = [this, levelValue]()
         {
-            outputDecibelsLabel.setText(dbValueStr, juce::dontSendNotification);
+            float dbValue = 20 * log10(levelValue / 1.0f); // dBV ref value 1V            
+            outputDecibelsLabel.setText(juce::String{ dbValue }, juce::dontSendNotification);
         };
     };
            
@@ -75,8 +92,8 @@ void MainComponent::resized()
     // This is called when the MainComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
-    constexpr int titleLabelWidth = 260;
-    constexpr int titleLabelHeight = 24;
+    /*constexpr int titleLabelWidth = 260;
+    constexpr int titleLabelHeight = 24;*/
     constexpr int textLabelsWidth = 100;
     constexpr int textLabelsHeight = 24;
     constexpr int inOutLabelsWidth = 100;
@@ -86,11 +103,16 @@ void MainComponent::resized()
     constexpr int numOfRows = 5;
     constexpr int verticalDistance = numOfRows + 1;
     int heightOffset = getHeight() / verticalDistance / 2;
+        
+    unitMenuLabel.setBounds(getWidth() / 2 - textLabelsWidth - inOutLabelsWidth / 2,
+                            getHeight() / verticalDistance - heightOffset, 
+                            textLabelsWidth,
+                            textLabelsHeight);
 
-    titleLabel.setBounds(getWidth() / 2 - titleLabelWidth / 2, 
-                         getHeight() / verticalDistance - heightOffset, 
-                         titleLabelWidth, 
-                         titleLabelHeight);
+    unitMenu.setBounds(getWidth() / 2 - inOutLabelsWidth / 2,
+                       getHeight() / verticalDistance - heightOffset,
+                       inOutLabelsWidth, 
+                       inOutLabelsHeight);
 
     levelLabel.setBounds(getWidth() / 2 - textLabelsWidth - inOutLabelsWidth / 2, 
                          getHeight() / verticalDistance * 2 - heightOffset, 
@@ -131,4 +153,37 @@ void MainComponent::resized()
                           getHeight() / verticalDistance * 5 - heightOffset, 
                           buttonWidth, 
                           buttonHeight);
+}
+
+void MainComponent::unitMenuChanged()
+{
+    switch (unitMenu.getSelectedId())
+    {
+    case 1:
+        unitLevelLabel.setText("V", juce::dontSendNotification);
+        unitDecibelsLabel.setText("dBV", juce::dontSendNotification);
+        break;
+
+    case 2: 
+        unitLevelLabel.setText("V", juce::dontSendNotification);
+        unitDecibelsLabel.setText("dBu", juce::dontSendNotification);
+        break;
+
+    case 3: 
+        unitLevelLabel.setText("V", juce::dontSendNotification);
+        unitDecibelsLabel.setText("dBuV", juce::dontSendNotification);
+        break;
+
+    case 4: 
+        unitLevelLabel.setText("mV", juce::dontSendNotification);
+        unitDecibelsLabel.setText("dBmV", juce::dontSendNotification);
+        break;
+
+    case 5: 
+        unitLevelLabel.setText("uV", juce::dontSendNotification);
+        unitDecibelsLabel.setText("dBuV", juce::dontSendNotification);
+        break;
+
+    default: break;
+    }
 }

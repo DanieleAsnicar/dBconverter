@@ -17,14 +17,18 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void unitMenuChanged();
     
 private:
     //==============================================================================
     // Your private member variables go here...
     juce::TextButton convertButton{ "Convert" };    
     juce::TextButton resetButton{ "Reset" };
+
+    juce::ComboBox unitMenu;
     
-    juce::Label titleLabel;
+    //juce::Label titleLabel;
+    juce::Label unitMenuLabel;
     juce::Label levelLabel;
     juce::Label decibelsLabel;
     juce::Label unitLevelLabel;
