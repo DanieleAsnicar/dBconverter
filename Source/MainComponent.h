@@ -27,8 +27,10 @@ private:
     juce::Label titleLabel;
     juce::Label levelLabel;
     juce::Label decibelsLabel;
-    juce::Label levelInputLabel;
-    juce::Label decibelsOutputLabel;
+    juce::Label unitLevelLabel;
+    juce::Label unitDecibelsLabel;
+    juce::Label inputLevelLabel;
+    juce::Label outputDecibelsLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
