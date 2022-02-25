@@ -21,17 +21,14 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
-    juce::TextButton unitToDbButton{ "Convert" };
-    juce::TextButton dbToUnitButton{ "Convert" };
+    juce::TextButton convertButton{ "Convert" };    
     juce::TextButton resetButton{ "Reset" };
-    //juce::TextButton stateButton{ "State Off" };
-
+    
     juce::Label titleLabel;
     juce::Label levelLabel;
     juce::Label decibelsLabel;
     juce::Label levelInputLabel;
     juce::Label decibelsOutputLabel;
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

@@ -2,40 +2,24 @@
 
 //==============================================================================
 MainComponent::MainComponent()
-{    
-    /*unitToDbButton.onClick = [this]() 
-    { 
-        decibelsOutputLabel.setText(levelInputLabel.getText().toUpperCase(), juce::dontSendNotification);
-    };*/
-
-    /*stateButton.setColour(stateButton.buttonOnColourId, juce::Colours::darkolivegreen);
-    stateButton.setClickingTogglesState(true);
-    stateButton.onClick = [&]() {
-        const char* const message = stateButton.getToggleState() ? "State On" : "State Off";
-        std::cout << message << std::endl;
-        stateButton.setButtonText(message);
-    };*/
-
-    addAndMakeVisible(unitToDbButton);
-    addAndMakeVisible(dbToUnitButton);
+{   
+    addAndMakeVisible(convertButton);    
     addAndMakeVisible(resetButton);
 
     addAndMakeVisible(titleLabel);
     titleLabel.setFont(juce::Font(16.0f, juce::Font::bold));
-    titleLabel.setText("Click in the box to enter some text...", juce::dontSendNotification);
-    //titleLabel.setColour(juce::Label::textColourId, juce::Colours::lightgreen);
+    titleLabel.setText("Level Converter: V to dBV", juce::dontSendNotification);
     titleLabel.setJustificationType(juce::Justification::centred);
+    //titleLabel.setColour(juce::Label::textColourId, juce::Colours::lightgreen);
 
     addAndMakeVisible(levelLabel);
     levelLabel.setText("Level (V):", juce::dontSendNotification);
-    levelLabel.attachToComponent(&levelInputLabel, true);
-    //levelLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+    levelLabel.attachToComponent(&levelInputLabel, true);    
     levelLabel.setJustificationType(juce::Justification::right);
 
     addAndMakeVisible(decibelsLabel);
     decibelsLabel.setText("Decibels (dBV):", juce::dontSendNotification);
-    decibelsLabel.attachToComponent(&decibelsOutputLabel, true);
-    //decibelsLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
+    decibelsLabel.attachToComponent(&decibelsOutputLabel, true);    
     decibelsLabel.setJustificationType(juce::Justification::right);
 
     addAndMakeVisible(decibelsOutputLabel);
@@ -43,21 +27,26 @@ MainComponent::MainComponent()
 
     addAndMakeVisible(levelInputLabel);
     levelInputLabel.setEditable(true);
-    levelInputLabel.setColour(juce::Label::backgroundColourId, juce::Colours::darkslategrey);
-    //levelInputLabel.onTextChange = [this] { decibelsOutputLabel.setText(levelInputLabel.getText().toUpperCase(), juce::dontSendNotification); };
-    levelInputLabel.onTextChange = [this] 
+    levelInputLabel.setColour(juce::Label::backgroundColourId, juce::Colours::darkslategrey);    
+    levelInputLabel.onTextChange = [this] ()
     {         
         float levelValue = levelInputLabel.getText().getFloatValue();
         float dbValue = 20 * log10(levelValue / 1.0f); // dBV ref value 1V
         juce::String dbValueStr{ dbValue };
        
-        unitToDbButton.onClick = [this, dbValueStr]()
+        convertButton.onClick = [this, dbValueStr]()
         {
             decibelsOutputLabel.setText(dbValueStr, juce::dontSendNotification);
         };
     };
            
-    setSize (600, 400);
+    resetButton.onClick = [this]() 
+    { 
+        levelInputLabel.setText(juce::String{ "" }, juce::dontSendNotification);
+        decibelsOutputLabel.setText(juce::String{ "" }, juce::dontSendNotification);
+    };
+
+    setSize (400, 300);
 }
 
 MainComponent::~MainComponent()
@@ -77,14 +66,48 @@ void MainComponent::resized()
     // This is called when the MainComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
-    titleLabel.setBounds(getWidth() / 2 - 150, getHeight() / 2 - 175, 300, 50);
-    levelLabel.setBounds(20, getHeight() / 2 - 125, 100, 50);
-    decibelsLabel.setBounds(20, getHeight() / 2 - 25, 100, 50);
+    constexpr int titleLabelWidth = 260;
+    constexpr int titleLabelHeight = 24;
+    constexpr int leftLabelsWidth = 100;
+    constexpr int leftLabelsHeight = 24;
+    constexpr int inOutLabelsWidth = 100;
+    constexpr int inOutLabelsHeight = 24;
+    constexpr int buttonWidth = 100;
+    constexpr int buttonHeight = 24;
+    int heightOffset = getHeight() / 6 / 2;
+
+    titleLabel.setBounds(getWidth() / 2 - titleLabelWidth / 2, 
+                         getHeight() / 6 - heightOffset, 
+                         titleLabelWidth, 
+                         titleLabelHeight);
+
+    levelLabel.setBounds(getWidth() / 2 - leftLabelsWidth - inOutLabelsWidth / 2, 
+                         getHeight() / 6 * 2 - heightOffset, 
+                         leftLabelsWidth, 
+                         leftLabelsHeight);
+
+    decibelsLabel.setBounds(getWidth() / 2 - leftLabelsWidth - inOutLabelsWidth / 2,
+                            getHeight() / 6 * 4 - heightOffset,
+                            leftLabelsWidth,
+                            leftLabelsHeight);
     
-    levelInputLabel.setBounds(150, getHeight() / 2 - 125, 200, 24);
-    decibelsOutputLabel.setBounds(150, getHeight() / 2 - 25, 200, 24);
+    levelInputLabel.setBounds(getWidth() / 2 - inOutLabelsWidth / 2,
+                              getHeight() / 6 * 2 - heightOffset,
+                              inOutLabelsWidth, 
+                              inOutLabelsHeight);
+
+    decibelsOutputLabel.setBounds(getWidth() / 2 - inOutLabelsWidth / 2,
+                                  getHeight() / 6 * 4 - heightOffset,
+                                  inOutLabelsWidth, 
+                                  inOutLabelsHeight);
     
-    unitToDbButton.setBounds(getWidth() / 2 + 100, getHeight() / 2 - 125, 100, 24);
-    dbToUnitButton.setBounds(getWidth() / 2 + 100, getHeight() / 2 - 25, 100, 24);
-    resetButton.setBounds(getWidth() / 2 + 100, getHeight() / 2 + 75, 100, 24);
+    convertButton.setBounds(getWidth() / 2 - buttonWidth / 2, 
+                             getHeight() / 6 * 3 - heightOffset, 
+                             buttonWidth, 
+                             buttonHeight);
+
+    resetButton.setBounds(getWidth() / 2 - buttonWidth / 2, 
+                          getHeight() / 6 * 5 - heightOffset, 
+                          buttonWidth, 
+                          buttonHeight);
 }
