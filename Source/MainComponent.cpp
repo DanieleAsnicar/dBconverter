@@ -9,8 +9,8 @@ MainComponent::MainComponent()
     addAndMakeVisible(unitMenu);
     unitMenu.addItem("V to dBV", 1);
     unitMenu.addItem("V to dBu", 2);
-    unitMenu.addItem("uV to dBuV", 3);
-    unitMenu.addItem("mV to dBmV", 4);
+    unitMenu.addItem("W to dBW", 3);
+    unitMenu.addItem("mW to dBm", 4);
     unitMenu.setJustificationType(juce::Justification::centred);
 
     unitMenu.onChange = [this] 
@@ -147,14 +147,24 @@ void MainComponent::resized()
 
 void MainComponent::calculateAndOutputConversion(float levelValue)
 {
-    float dbValue = 20 * log10(levelValue / referenceValue);             
+    if (isPower)
+        multiplierPowerVoltage = 10.0f;
+    else
+        multiplierPowerVoltage = 20.0f;
+
+    float dbValue = multiplierPowerVoltage * log10(levelValue / referenceValue);             
     outputDecibelsLabel.setText(juce::String{ dbValue }, juce::dontSendNotification);
 }
 
 void MainComponent::updateAndOutputConversion()
 {
+    if (isPower)
+        multiplierPowerVoltage = 10.0f;
+    else
+        multiplierPowerVoltage = 20.0f;
+
     float levelValue = inputLevelLabel.getText().getFloatValue();
-    float dbValue = 20 * log10(levelValue / referenceValue);
+    float dbValue = multiplierPowerVoltage * log10(levelValue / referenceValue);
     outputDecibelsLabel.setText(juce::String{ dbValue }, juce::dontSendNotification);
 }
 
@@ -166,24 +176,28 @@ void MainComponent::unitMenuChanged()
         unitLevelLabel.setText("V", juce::dontSendNotification);
         unitDecibelsLabel.setText("dBV", juce::dontSendNotification);
         referenceValue = 1.0f;
+        isPower = true;
         break;
 
     case 2: 
         unitLevelLabel.setText("V", juce::dontSendNotification);
         unitDecibelsLabel.setText("dBu", juce::dontSendNotification);
         referenceValue = 0.775f;
+        isPower = true;
         break;
 
     case 3:
-        unitLevelLabel.setText("uV", juce::dontSendNotification);
-        unitDecibelsLabel.setText("dBuV", juce::dontSendNotification);
+        unitLevelLabel.setText("W", juce::dontSendNotification);
+        unitDecibelsLabel.setText("dBW", juce::dontSendNotification);
         referenceValue = 1.0f;
+        isPower = true;
         break;
 
     case 4:
-        unitLevelLabel.setText("mV", juce::dontSendNotification);
-        unitDecibelsLabel.setText("dBmV", juce::dontSendNotification);
+        unitLevelLabel.setText("mW", juce::dontSendNotification);
+        unitDecibelsLabel.setText("dBm", juce::dontSendNotification);
         referenceValue = 1.0f;
+        isPower = true;
         break;
 
     default: break;
