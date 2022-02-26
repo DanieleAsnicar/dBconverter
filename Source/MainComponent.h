@@ -17,6 +17,8 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void calculateAndOutputConversion(float dbValue);
+    void updateAndOutputConversion();
     void unitMenuChanged();
     
 private:
@@ -26,6 +28,7 @@ private:
     juce::TextButton resetButton{ "Reset" };
 
     juce::ComboBox unitMenu;
+    float referenceValue = 0.0f;
     
     //juce::Label titleLabel;
     juce::Label unitMenuLabel;
