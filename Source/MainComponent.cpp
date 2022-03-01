@@ -146,26 +146,15 @@ void MainComponent::resized()
 }
 
 void MainComponent::calculateAndOutputConversion(float levelValue)
-{
-    if (isPower)
-        multiplierPowerVoltage = 10.0f;
-    else
-        multiplierPowerVoltage = 20.0f;
-
+{    
     float dbValue = multiplierPowerVoltage * log10(levelValue / referenceValue);             
     outputDecibelsLabel.setText(juce::String{ dbValue }, juce::dontSendNotification);
 }
 
 void MainComponent::updateAndOutputConversion()
-{
-    if (isPower)
-        multiplierPowerVoltage = 10.0f;
-    else
-        multiplierPowerVoltage = 20.0f;
-
+{    
     float levelValue = inputLevelLabel.getText().getFloatValue();
-    float dbValue = multiplierPowerVoltage * log10(levelValue / referenceValue);
-    outputDecibelsLabel.setText(juce::String{ dbValue }, juce::dontSendNotification);
+    calculateAndOutputConversion(levelValue);
 }
 
 void MainComponent::unitMenuChanged()
@@ -176,28 +165,28 @@ void MainComponent::unitMenuChanged()
         unitLevelLabel.setText("V", juce::dontSendNotification);
         unitDecibelsLabel.setText("dBV", juce::dontSendNotification);
         referenceValue = 1.0f;
-        isPower = false;
+        multiplierPowerVoltage = 20.0f;
         break;
 
     case 2: 
         unitLevelLabel.setText("V", juce::dontSendNotification);
         unitDecibelsLabel.setText("dBu", juce::dontSendNotification);
         referenceValue = 0.775f;
-        isPower = false;
+        multiplierPowerVoltage = 20.0f;
         break;
 
     case 3:
         unitLevelLabel.setText("W", juce::dontSendNotification);
         unitDecibelsLabel.setText("dBW", juce::dontSendNotification);
         referenceValue = 1.0f;
-        isPower = true;
+        multiplierPowerVoltage = 10.0f;
         break;
 
     case 4:
         unitLevelLabel.setText("mW", juce::dontSendNotification);
         unitDecibelsLabel.setText("dBm", juce::dontSendNotification);
         referenceValue = 1.0f;
-        isPower = true;
+        multiplierPowerVoltage = 10.0f;
         break;
 
     default: break;

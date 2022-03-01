@@ -30,9 +30,7 @@ private:
     juce::ComboBox unitMenu;
     float referenceValue = 0.0f;
     float multiplierPowerVoltage = 0.0f;
-    bool isPower = false;
     
-    //juce::Label titleLabel;
     juce::Label unitMenuLabel;
     juce::Label levelLabel;
     juce::Label decibelsLabel;
