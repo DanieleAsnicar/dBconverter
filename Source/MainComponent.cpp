@@ -176,14 +176,14 @@ void MainComponent::unitMenuChanged()
         unitLevelLabel.setText("V", juce::dontSendNotification);
         unitDecibelsLabel.setText("dBV", juce::dontSendNotification);
         referenceValue = 1.0f;
-        isPower = true;
+        isPower = false;
         break;
 
     case 2: 
         unitLevelLabel.setText("V", juce::dontSendNotification);
         unitDecibelsLabel.setText("dBu", juce::dontSendNotification);
         referenceValue = 0.775f;
-        isPower = true;
+        isPower = false;
         break;
 
     case 3:
